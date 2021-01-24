@@ -1,5 +1,4 @@
 # Building Vector Auto Regressive Model for predicting the Residential House prices in USA
-
 #Installing Pacakges 
 
 install.packages("fredr")
@@ -103,12 +102,25 @@ case_shiller_price_index          <- rename(case_shiller_price_index ,        cp
 # Visuilizing the Data 
 
 monthly_supply_homes_plot                  <- ggplot(monthly_supply_homes ,            aes(x = date , y = msh ))  + geom_line(color = 'red') 
+monthly_supply_homes_plot
+
 unemployment_rate_plot                     <- ggplot(unemployment_rate ,               aes(x = date , y = uer ))  + geom_line(color = 'blue') 
+unemployment_rate_plot
+
 federal_funds_interest_rate_plot           <- ggplot(federal_funds_interest_rate ,     aes(x = date , y = ffir )) + geom_line(color = 'red') 
+federal_funds_interest_rate_plot
+
 population_plot                            <- ggplot(population ,                      aes(x = date , y = pop ))  + geom_line(color = 'blue') 
+population_plot
+
 recession_plot                             <- ggplot(recession ,                       aes(x = date , y = rec ))  + geom_line(color = 'red') 
+recession_plot
+
 housing_starts_plot                        <- ggplot(housing_starts ,                  aes(x = date , y = hs ))   + geom_line(color = 'blue') 
+housing_starts_plot
+
 case_shiller_price_index_plot              <- ggplot(case_shiller_price_index ,        aes(x = date , y = cpi ))  + geom_line(color = 'blue') 
+case_shiller_price_index_plot
 
 # Visuiizing the distribution of data
 
@@ -120,15 +132,14 @@ ggplot(recession,                         aes(rec) )    +   geom_density(kernel 
 ggplot(housing_starts,                    aes(hs) )     +   geom_density(kernel = 'gaussian' , color = 'blue')
 ggplot(case_shiller_price_index,          aes(cpi) )    +   geom_density(kernel = 'gaussian' , color = 'blue')
 
+# mergeing into dataframe
 
-
-
-df6        <- merge(monthly_supply_homes , unemployment_rate , by = 'date')
-df5        <- merge(df6 , federal_funds_interest_rate ,        by = 'date')
-df4        <- merge(df5 , population ,                         by = 'date')
-df3        <- merge(df4 , recession ,                          by = 'date')
-df2        <- merge(df3 , housing_starts ,                     by = 'date')
-df         <- merge(df2 , case_shiller_price_index ,           by = 'date')
+df5        <- merge(monthly_supply_homes , unemployment_rate , by = 'date')
+df4        <- merge(df5 , federal_funds_interest_rate ,        by = 'date')
+df3        <- merge(df4 , population ,                         by = 'date')
+df2        <- merge(df3 , recession ,                          by = 'date')
+df1        <- merge(df2 , housing_starts ,                     by = 'date')
+df         <- merge(df1 , case_shiller_price_index ,           by = 'date')
 
 # converting into time-series
 
@@ -149,7 +160,6 @@ ts.plot(population)
 ts.plot(recession)
 ts.plot(housing_starts)
 ts.plot(case_shiller_price_index)
-
 
 
 # creating a new timeseries data frame
@@ -177,10 +187,8 @@ adf_test5
 adf_test6 <- adf.test(housing_starts)
 adf_test6
 
-
 adf_test7 <- adf.test(case_shiller_price_index)
 adf_test7
-
 
 
 # Auto correlation Function
@@ -206,110 +214,134 @@ pacf(case_shiller_price_index )
 
 # finding the optimal lags to use for this model
 
-lagselect <- VARselect(tf , lag.max = 10 ,  type = 'const')
+lagselect                  <- VARselect(tf , lag.max = 10 ,  type = 'const')
 lagselect$selection
-
-
 
 # Building VAR model 
 
-model <- VAR(tf , p = 2 , type = 'const' , season = NULL , exogen = NULL)
+model                      <- VAR(tf , p = 2 , type = 'const' , season = NULL , exogen = NULL)
 summary(model)
 
 # Daignosing VAR model
 # serial Correlation
 
-serial_tet <- serial.test(model , lags.pt = 12 , type = 'PT.asymptotic')
+serial_tet                  <- serial.test(model , lags.pt = 12 , type = 'PT.asymptotic')
 serial_tet
-
 
 # Hetroscedasticity
 
-arch_test <- arch.test(model , lags.multi = 12 , multivariate.only = TRUE)
+arch_test                   <- arch.test(model , lags.multi = 12 , multivariate.only = TRUE)
 arch_test
 
 # Normal Distribution test
 
-normality_test <- normality.test(model , multivariate.only =  TRUE)
+normality_test              <- normality.test(model , multivariate.only =  TRUE)
 normality_test
 
 # structural Breaks
 
-stability_test <- stability(model , type = 'OLS-CUSUM')
+stability_test              <- stability(model , type = 'OLS-CUSUM')
 stability_test
 plot(stability_test)
 
 
 # Granger causality test
 
-msh_granger <- causality(model , cause = 'monthly_supply_homes')
+msh_granger                 <- causality(model , cause = 'monthly_supply_homes')
 msh_granger
 
-uem_granger <- causality(model , cause = 'unemployment_rate')
+uem_granger                 <- causality(model , cause = 'unemployment_rate')
 uem_granger
 
-ffir_granger <- causality(model , cause = 'federal_funds_interest_rate')
+ffir_granger                <- causality(model , cause = 'federal_funds_interest_rate')
 ffir_granger
 
-pop_granger <- causality(model , cause = 'population')
+pop_granger                 <- causality(model , cause = 'population')
 pop_granger
 
-
-rec_granger <- causality(model , cause = 'recession')
+rec_granger                 <- causality(model , cause = 'recession')
 rec_granger
 
-
-hs_granger <- causality(model , cause = 'housing_starts')
+hs_granger                  <- causality(model , cause = 'housing_starts')
 hs_granger
 
-
-cpi_granger <- causality(model , cause = 'case_shiller_price_index')
+cpi_granger                 <- causality(model , cause = 'case_shiller_price_index')
 cpi_granger
 
 
 # Impulse response functions
 
-msh_irf <- irf(model , impulse= 'monthly_supply_homes' , response = 'case_shiller_price_index' , n.ahead = 20 , boot = TRUE)
+msh_irf     <- irf(model , impulse= 'monthly_supply_homes' , 
+                           response = 'case_shiller_price_index' , 
+                           n.ahead = 20 , 
+                           boot = TRUE)
 plot(msh_irf , ylab = "case shiier price index" , main = 'shock from HPI')
 
-uer_irf <- irf(model , impulse= 'unemployment_rate' , response = 'case_shiller_price_index' , n.ahead = 20 , boot = TRUE)
+
+uer_irf <- irf(model , impulse= 'unemployment_rate' , 
+                       response = 'case_shiller_price_index' , 
+                       n.ahead = 20 , 
+                       boot = TRUE)
 plot(uer_irf , ylab = "case shiier price index" , main = 'unemployment rate')
 
 
-ffir_irf <- irf(model , impulse= 'federal_funds_interest_rate' , response = 'case_shiller_price_index' , n.ahead = 20 , boot = TRUE)
+ffir_irf <- irf(model , impulse= 'federal_funds_interest_rate' , 
+                        response = 'case_shiller_price_index' , 
+                        n.ahead = 20 , 
+                        boot = TRUE)
 plot(ffir_irf , ylab = "case shiier price index" , main = 'federal funds interest rate ')
 
-pop_irf <- irf(model , impulse= 'population' , response = 'case_shiller_price_index' , n.ahead = 20 , boot = TRUE)
+
+pop_irf <- irf(model , impulse= 'population' ,
+                       response = 'case_shiller_price_index' , 
+                       n.ahead = 20 , 
+                       boot = TRUE)
 plot(pop_irf , ylab = "case shiier price index" , main = 'population ')
 
-rec_irf <- irf(model , impulse= 'recession' , response = 'case_shiller_price_index' , n.ahead = 20 , boot = TRUE)
+
+rec_irf <- irf(model , impulse= 'recession' , 
+                       response = 'case_shiller_price_index' , 
+                       n.ahead = 20 , 
+                       boot = TRUE)
 plot(rec_irf , ylab = "case shiier price index" , main = 'recession ')
 
-hs_irf <- irf(model , impulse= 'housing_starts' , response = 'case_shiller_price_index' , n.ahead = 20 , boot = TRUE)
+
+hs_irf <- irf(model , impulse= 'housing_starts' , 
+                      response = 'case_shiller_price_index' , 
+                      n.ahead = 20 , 
+                      boot = TRUE)
 plot(hs_irf , ylab = "case shiier price index" , main = 'housing_starts ')
 
 
-cpi_irf <- irf(model , impulse= 'case_shiller_price_index' , response = 'case_shiller_price_index' , n.ahead = 20 , boot = TRUE)
+cpi_irf <- irf(model , impulse= 'case_shiller_price_index' , 
+                       response = 'case_shiller_price_index' ,
+                       n.ahead = 20 , 
+                       boot = TRUE)
 plot(cpi_irf , ylab = "case shiier price index" , main = 'case_shiller_price_index ')
 
 
 # Forecast Error variance Decomposition
 
-var_decpmp <- fevd(model , n.ahead = 10)
-plot(var_decpmp)
-var_decpmp
+var_decomp <- fevd(model , n.ahead = 10)
+plot(var_decomp)
+var_decomp
 
 
 # VAR forecarsting for next 10 periods
 
 var_forecast <- predict(model , n.ahead =  10 , ci = 0.95)
-fanchart(var_forecast , names = 'monthly_supply_homes' , main = 'forecast the next 10 periods')
-fanchart(var_forecast , names = 'unemployment_rate' ,  main = 'forecast the next 10 periods')
-fanchart(var_forecast , names = 'federal_funds_interest_rate', main = 'forecast the next 10 periods')
-fanchart(var_forecast , names = 'population' , main = 'forecast the next 10 periods')
-fanchart(var_forecast , names = 'recession', main = 'forecast the next 10 periods')
-fanchart(var_forecast , names = 'housing_starts', main = 'forecast the next 10 periods')
-fanchart(var_forecast , names = 'case_shiller_price_index', main = 'forecast the next 10 periods')
+var_forecast
+
+
+# ploting the fancharts for next ten periods
+
+fanchart(var_forecast , names = 'monthly_supply_homes',             main = 'forecast monthly_supply_homes to 10 periods')
+fanchart(var_forecast , names = 'unemployment_rate',                main = 'forecast unemployment_rate to 10 periods')
+fanchart(var_forecast , names = 'federal_funds_interest_rate',      main = 'forecast federal_funds_interest_rate to 10 periods')
+fanchart(var_forecast , names = 'population',                       main = 'forecast population to 10 periods')
+fanchart(var_forecast , names = 'recession',                        main = 'forecast recession to 10 periods')
+fanchart(var_forecast , names = 'housing_starts',                   main = 'forecast housing_starts to 10 periods')
+fanchart(var_forecast , names = 'case_shiller_price_index',         main = 'forecast case_shiller_price_index to 10 periods')
 
 
 
