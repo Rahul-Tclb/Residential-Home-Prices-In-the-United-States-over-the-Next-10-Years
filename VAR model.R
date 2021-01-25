@@ -38,7 +38,6 @@ fredr_set_key(key)
 monthly_supply_homes           <- fredr(series_id = "MSACSR",          observation_start = as.Date("2000-01-01"),  observation_end = as.Date("2019-01-01")) 
 unemployment_rate              <- fredr(series_id = "UNRATE",          observation_start = as.Date("2000-01-01"),  observation_end = as.Date("2019-01-01")) 
 federal_funds_interest_rate    <- fredr(series_id = "FEDFUNDS",        observation_start = as.Date("2000-01-01"),  observation_end = as.Date("2019-01-01")) 
-population                     <- fredr(series_id = "POP",             observation_start = as.Date("2000-01-01"),  observation_end = as.Date("2019-01-01")) 
 recession                      <- fredr(series_id = "RECPROUSM156N",   observation_start = as.Date("2000-01-01"),  observation_end = as.Date("2019-01-01")) 
 housing_starts                 <- fredr(series_id = "HOUST",           observation_start = as.Date("2000-01-01"),  observation_end = as.Date("2019-01-01")) 
 case_shiller_price_index       <- fredr(series_id = "CSUSHPINSA",      observation_start = as.Date("2000-01-01"),  observation_end = as.Date("2019-01-01"))
@@ -48,7 +47,6 @@ case_shiller_price_index       <- fredr(series_id = "CSUSHPINSA",      observati
 head(monthly_supply_homes)
 head(unemployment_rate)
 head(federal_funds_interest_rate)
-head(population)
 head(recession)
 head(housing_starts)
 head(case_shiller_price_index)
@@ -64,8 +62,6 @@ chartSeries(UNRATE)
 getSymbols("FEDFUNDS", src="FRED")
 chartSeries(FEDFUNDS)
 
-getSymbols("POP", src="FRED")
-chartSeries(POP)
 
 getSymbols("RECPROUSM156N", src="FRED")
 chartSeries(RECPROUSM156N)
@@ -83,7 +79,6 @@ chartSeries(CSUSHPINSA)
 monthly_supply_homes              <- subset(monthly_supply_homes ,         select = c(1,3))
 unemployment_rate                 <- subset(unemployment_rate ,            select = c(1,3))
 federal_funds_interest_rate       <- subset(federal_funds_interest_rate ,  select = c(1,3))
-population                        <- subset(population ,                   select = c(1,3))
 recession                         <- subset(recession ,                    select = c(1,3))
 housing_starts                    <- subset(housing_starts ,               select = c(1,3))
 case_shiller_price_index          <- subset(case_shiller_price_index ,     select = c(1,3))
@@ -93,7 +88,6 @@ case_shiller_price_index          <- subset(case_shiller_price_index ,     selec
 monthly_supply_homes              <- rename(monthly_supply_homes ,            msh  = value)
 unemployment_rate                 <- rename(unemployment_rate ,               uer  = value)
 federal_funds_interest_rate       <- rename(federal_funds_interest_rate ,     ffir = value)
-population                        <- rename(population ,                      pop  = value)
 recession                         <- rename(recession ,                       rec  = value)
 housing_starts                    <- rename(housing_starts ,                  hs   = value)
 case_shiller_price_index          <- rename(case_shiller_price_index ,        cpi  = value)
@@ -110,9 +104,6 @@ unemployment_rate_plot
 federal_funds_interest_rate_plot           <- ggplot(federal_funds_interest_rate ,     aes(x = date , y = ffir )) + geom_line(color = 'red') 
 federal_funds_interest_rate_plot
 
-population_plot                            <- ggplot(population ,                      aes(x = date , y = pop ))  + geom_line(color = 'blue') 
-population_plot
-
 recession_plot                             <- ggplot(recession ,                       aes(x = date , y = rec ))  + geom_line(color = 'red') 
 recession_plot
 
@@ -127,16 +118,14 @@ case_shiller_price_index_plot
 ggplot(monthly_supply_homes,              aes(msh) )    +   geom_density(kernel = 'gaussian' , color = 'red')
 ggplot(unemployment_rate,                 aes(uer) )    +   geom_density(kernel = 'gaussian' , color = 'blue')
 ggplot(federal_funds_interest_rate,       aes(ffir) )   +   geom_density(kernel = 'gaussian' , color = 'red')
-ggplot(population,                        aes(pop) )    +   geom_density(kernel = 'gaussian' , color = 'blue')
 ggplot(recession,                         aes(rec) )    +   geom_density(kernel = 'gaussian' , color = 'red')
 ggplot(housing_starts,                    aes(hs) )     +   geom_density(kernel = 'gaussian' , color = 'blue')
 ggplot(case_shiller_price_index,          aes(cpi) )    +   geom_density(kernel = 'gaussian' , color = 'blue')
 
 # mergeing into dataframe
 
-df5        <- merge(monthly_supply_homes , unemployment_rate , by = 'date')
-df4        <- merge(df5 , federal_funds_interest_rate ,        by = 'date')
-df3        <- merge(df4 , population ,                         by = 'date')
+df4        <- merge(monthly_supply_homes , unemployment_rate , by = 'date')
+df3        <- merge(df4 , federal_funds_interest_rate ,        by = 'date')
 df2        <- merge(df3 , recession ,                          by = 'date')
 df1        <- merge(df2 , housing_starts ,                     by = 'date')
 df         <- merge(df1 , case_shiller_price_index ,           by = 'date')
@@ -146,7 +135,6 @@ df         <- merge(df1 , case_shiller_price_index ,           by = 'date')
 monthly_supply_homes                       <- ts(monthly_supply_homes$msh ,          start = c(2000 , 1) , frequency = 12)
 unemployment_rate                          <- ts(unemployment_rate$uer ,             start = c(2000 , 1) , frequency = 12)
 federal_funds_interest_rate                <- ts(federal_funds_interest_rate$ffir,   start = c(2000 , 1) , frequency = 12)
-population                                 <- ts(population$pop ,                    start = c(2000 , 1) , frequency = 12)
 recession                                  <- ts(recession$rec ,                     start = c(2000 , 1) , frequency = 12)
 housing_starts                             <- ts(housing_starts$hs ,                 start = c(2000 , 1) , frequency = 12)
 case_shiller_price_index                   <- ts(case_shiller_price_index$cpi ,      start = c(2000 , 1) , frequency = 12)
@@ -156,7 +144,6 @@ case_shiller_price_index                   <- ts(case_shiller_price_index$cpi , 
 ts.plot(monthly_supply_homes)
 ts.plot(unemployment_rate)
 ts.plot(federal_funds_interest_rate)
-ts.plot(population)
 ts.plot(recession)
 ts.plot(housing_starts)
 ts.plot(case_shiller_price_index)
@@ -164,8 +151,29 @@ ts.plot(case_shiller_price_index)
 
 # creating a new timeseries data frame
 
-tf  = cbind(monthly_supply_homes , unemployment_rate , federal_funds_interest_rate , population , recession , housing_starts  ,case_shiller_price_index )
+tf  = cbind(monthly_supply_homes , unemployment_rate , federal_funds_interest_rate , recession , housing_starts  ,case_shiller_price_index )
 tf
+
+
+# Auto correlation Function
+
+acf(monthly_supply_homes )
+acf(unemployment_rate )
+acf(federal_funds_interest_rate )
+acf(recession )
+acf(housing_starts )
+acf(case_shiller_price_index )
+
+# Partial Auto correlation funcion
+
+pacf(monthly_supply_homes )
+pacf(unemployment_rate )
+pacf(federal_funds_interest_rate )
+pacf(recession )
+pacf(housing_starts )
+pacf(case_shiller_price_index )
+
+
 
 # Augmented Dickey–Fuller Test
 
@@ -178,38 +186,16 @@ adf_test2
 adf_test3 <- adf.test(federal_funds_interest_rate)
 adf_test3
 
-adf_test4 <- adf.test(population)
+
+adf_test4 <- adf.test(recession)
 adf_test4
 
-adf_test5 <- adf.test(recession)
+adf_test5 <- adf.test(housing_starts)
 adf_test5
 
-adf_test6 <- adf.test(housing_starts)
+adf_test6 <- adf.test(case_shiller_price_index)
 adf_test6
 
-adf_test7 <- adf.test(case_shiller_price_index)
-adf_test7
-
-
-# Auto correlation Function
-
-acf(monthly_supply_homes )
-acf(unemployment_rate )
-acf(federal_funds_interest_rate )
-acf(population )
-acf(recession )
-acf(housing_starts )
-acf(case_shiller_price_index )
-
-# Partial Auto correlation funcion
-
-pacf(monthly_supply_homes )
-pacf(unemployment_rate )
-pacf(federal_funds_interest_rate )
-pacf(population )
-pacf(recession )
-pacf(housing_starts )
-pacf(case_shiller_price_index )
 
 
 # finding the optimal lags to use for this model
@@ -256,9 +242,6 @@ uem_granger
 ffir_granger                <- causality(model , cause = 'federal_funds_interest_rate')
 ffir_granger
 
-pop_granger                 <- causality(model , cause = 'population')
-pop_granger
-
 rec_granger                 <- causality(model , cause = 'recession')
 rec_granger
 
@@ -290,13 +273,6 @@ ffir_irf <- irf(model , impulse= 'federal_funds_interest_rate' ,
                         n.ahead = 20 , 
                         boot = TRUE)
 plot(ffir_irf , ylab = "case shiier price index" , main = 'federal funds interest rate ')
-
-
-pop_irf <- irf(model , impulse= 'population' ,
-                       response = 'case_shiller_price_index' , 
-                       n.ahead = 20 , 
-                       boot = TRUE)
-plot(pop_irf , ylab = "case shiier price index" , main = 'population ')
 
 
 rec_irf <- irf(model , impulse= 'recession' , 
@@ -338,14 +314,13 @@ var_forecast
 fanchart(var_forecast , names = 'monthly_supply_homes',             main = 'forecast monthly_supply_homes to 10 periods')
 fanchart(var_forecast , names = 'unemployment_rate',                main = 'forecast unemployment_rate to 10 periods')
 fanchart(var_forecast , names = 'federal_funds_interest_rate',      main = 'forecast federal_funds_interest_rate to 10 periods')
-fanchart(var_forecast , names = 'population',                       main = 'forecast population to 10 periods')
 fanchart(var_forecast , names = 'recession',                        main = 'forecast recession to 10 periods')
 fanchart(var_forecast , names = 'housing_starts',                   main = 'forecast housing_starts to 10 periods')
 fanchart(var_forecast , names = 'case_shiller_price_index',         main = 'forecast case_shiller_price_index to 10 periods')
 
 
 
-
+##------------------------------------------------The End----------------------------------------------------------------------------------------##
 
 
 
