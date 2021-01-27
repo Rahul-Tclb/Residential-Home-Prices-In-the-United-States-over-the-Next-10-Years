@@ -157,6 +157,7 @@ tf
 
 # Auto correlation Function
 
+acf(tf , main  = 'ACF plot ')
 acf(monthly_supply_homes )
 acf(unemployment_rate )
 acf(federal_funds_interest_rate )
@@ -166,6 +167,7 @@ acf(case_shiller_price_index )
 
 # Partial Auto correlation funcion
 
+pacf(tf , main = 'PACF plot')
 pacf(monthly_supply_homes )
 pacf(unemployment_rate )
 pacf(federal_funds_interest_rate )
@@ -265,41 +267,41 @@ uer_irf <- irf(model , impulse= 'unemployment_rate' ,
                        response = 'case_shiller_price_index' , 
                        n.ahead = 20 , 
                        boot = TRUE)
-plot(uer_irf , ylab = "case shiier price index" , main = 'unemployment rate')
+plot(uer_irf , ylab = "case shiier price index" , main = 'shock from unemployment rate')
 
 
 ffir_irf <- irf(model , impulse= 'federal_funds_interest_rate' , 
                         response = 'case_shiller_price_index' , 
                         n.ahead = 20 , 
                         boot = TRUE)
-plot(ffir_irf , ylab = "case shiier price index" , main = 'federal funds interest rate ')
+plot(ffir_irf , ylab = "case shiier price index" , main = 'shock from federal funds interest rate ')
 
 
 rec_irf <- irf(model , impulse= 'recession' , 
                        response = 'case_shiller_price_index' , 
                        n.ahead = 20 , 
                        boot = TRUE)
-plot(rec_irf , ylab = "case shiier price index" , main = 'recession ')
+plot(rec_irf , ylab = "case shiier price index" , main = 'shock from recession ')
 
 
 hs_irf <- irf(model , impulse= 'housing_starts' , 
                       response = 'case_shiller_price_index' , 
                       n.ahead = 20 , 
                       boot = TRUE)
-plot(hs_irf , ylab = "case shiier price index" , main = 'housing_starts ')
+plot(hs_irf , ylab = "case shiier price index" , main = 'shock from housing_starts ')
 
 
 cpi_irf <- irf(model , impulse= 'case_shiller_price_index' , 
                        response = 'case_shiller_price_index' ,
                        n.ahead = 20 , 
                        boot = TRUE)
-plot(cpi_irf , ylab = "case shiier price index" , main = 'case_shiller_price_index ')
+plot(cpi_irf , ylab = "case shiier price index" , main = 'shock from case_shiller_price_index ')
 
 
 # Forecast Error variance Decomposition
 
 var_decomp <- fevd(model , n.ahead = 10)
-plot(var_decomp)
+plot(var_decomp , main = 'Forecast Error Variance Decomposition')
 var_decomp
 
 
@@ -311,12 +313,12 @@ var_forecast
 
 # ploting the fancharts for next ten periods
 
-fanchart(var_forecast , names = 'monthly_supply_homes',             main = 'forecast monthly_supply_homes to 10 periods')
-fanchart(var_forecast , names = 'unemployment_rate',                main = 'forecast unemployment_rate to 10 periods')
-fanchart(var_forecast , names = 'federal_funds_interest_rate',      main = 'forecast federal_funds_interest_rate to 10 periods')
-fanchart(var_forecast , names = 'recession',                        main = 'forecast recession to 10 periods')
-fanchart(var_forecast , names = 'housing_starts',                   main = 'forecast housing_starts to 10 periods')
-fanchart(var_forecast , names = 'case_shiller_price_index',         main = 'forecast case_shiller_price_index to 10 periods')
+fanchart(var_forecast , names = 'monthly_supply_homes',             main = 'forecast monthly_supply_homes to 10 periods',          ylab = 'monthly supply homes'  , xlab = 'Time period ')
+fanchart(var_forecast , names = 'unemployment_rate',                main = 'forecast unemployment_rate to 10 periods' ,            ylab = 'Unemployment Rate'     , xlab = 'Time period ')
+fanchart(var_forecast , names = 'federal_funds_interest_rate',      main = 'forecast federal_funds_interest_rate to 10 periods',   ylab = 'Federa funds interest rate'  , xlab = 'Time period ')
+fanchart(var_forecast , names = 'recession',                        main = 'forecast recession to 10 periods' ,                    ylab = 'Recession'             , xlab = 'Time period ')
+fanchart(var_forecast , names = 'housing_starts',                   main = 'forecast housing_starts to 10 periods' ,               ylab = 'Housing starts'  , xlab = 'Time period ')
+fanchart(var_forecast , names = 'case_shiller_price_index',         main = 'forecast case_shiller_price_index to 10 periods' ,     ylab = 'case shiller house price index'  , xlab = 'Time period ')
 
 
 
