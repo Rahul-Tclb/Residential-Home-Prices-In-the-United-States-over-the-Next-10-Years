@@ -207,7 +207,7 @@ lagselect$selection
 
 # Building VAR model 
 
-model                      <- VAR(tf , p = 3 , type = 'const' , season = NULL , exogen = NULL)
+model                      <- VAR(tf , p = 3 , type = 'trend' , season = NULL , exogen = NULL)
 summary(model)
 
 # Daignosing VAR model
