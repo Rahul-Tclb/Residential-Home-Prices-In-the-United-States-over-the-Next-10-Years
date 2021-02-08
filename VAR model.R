@@ -139,6 +139,33 @@ recession                                  <- ts(recession$rec ,                
 housing_starts                             <- ts(housing_starts$hs ,                 start = c(2000 , 1) , frequency = 12)
 case_shiller_price_index                   <- ts(case_shiller_price_index$cpi ,      start = c(2000 , 1) , frequency = 12)
 
+# correlation and Correlation test 
+
+cordataframe <- data.frame(monthly_supply_homes , unemployment_rate , federal_funds_interest_rate ,recession,housing_starts , case_shiller_price_index)
+priceframe <- data.frame(case_shiller_price_index)
+
+correlation <- cor(cordataframe , priceframe , method = c('pearson'))
+plot(correlation)
+
+msh_cor_test <- cor.test(monthly_supply_homes , case_shiller_price_index , method = c('pearson'))
+msh_cor_test
+
+uer_cor_test <- cor.test(unemployment_rate , case_shiller_price_index , method = c('pearson'))
+uer_cor_test
+
+ffir_cor_test <- cor.test(federal_funds_interest_rate , case_shiller_price_index , method = c('pearson'))
+ffir_cor_test
+
+rec_cor_test <- cor.test(recession , case_shiller_price_index , method = c('pearson'))
+rec_cor_test
+
+hs_cor_test <- cor.test(housing_starts , case_shiller_price_index , method = c('pearson'))
+hs_cor_test
+
+cpi_cor_test <- cor.test(case_shiller_price_index , case_shiller_price_index , method = c('pearson'))
+cpi_cor_test
+
+
 # series vs Time Plot
 
 ts.plot(monthly_supply_homes)
